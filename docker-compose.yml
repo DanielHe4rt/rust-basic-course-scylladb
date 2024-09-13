@@ -1,42 +1,42 @@
 services:
-  ws-scylla-1: &scylla-main
-    image: scylladb/scylla:6.0
-    container_name: ws-scylla-1
-    command: [ '--smp=1', '--memory=1GB', '--overprovisioned=1', '--developer-mode=1', '--seeds=ws-scylla-1' ]
-    ports:
-      - '9040:9042'
-    networks:
-      ws-scylla:
-    volumes:
-      - scylla-rust-1:/var/lib/scylla
-  ws-scylla-2: &scylla-replica
-    <<: *scylla-main
-    container_name: ws-scylla-2
-    ports:
-      - '9041:9042'
-    volumes:
-      - scylla-rust-2:/var/lib/scylla
-  ws-scylla-3:
-    <<: *scylla-replica
-    container_name: ws-scylla-3
+  uni-scylla-1: &scylla-main
+    image: scylladb/scylla:6.1
+    container_name: uni-scylla-1
+    command: [ '--smp=1', '--memory=1GB', '--overprovisioned=1', '--developer-mode=1', '--seeds=uni-scylla-1' ]
     ports:
       - '9042:9042'
+    networks:
+      uni-scylla:
     volumes:
-      - scylla-rust-3:/var/lib/scylla
+      - vol-uni-scylla-1:/var/lib/scylla
+  uni-scylla-2: &scylla-replica
+    <<: *scylla-main
+    container_name: uni-scylla-2
+    ports:
+      - '9043:9042'
+    volumes:
+      - vol-uni-scylla-2:/var/lib/scylla
+  uni-scylla-3:
+    <<: *scylla-replica
+    container_name: uni-scylla-3
+    ports:
+      - '9044:9042'
+    volumes:
+      - vol-uni-scylla-3:/var/lib/scylla
 volumes:
-  scylla-rust-1:
-    name: scylla-rust-1
-  scylla-rust-2:
-    name: scylla-rust-2
-  scylla-rust-3:
-    name: scylla-rust-3
+  vol-uni-scylla-1:
+    name: vol-uni-scylla-1
+  vol-uni-scylla-2:
+    name: vol-uni-scylla-2
+  vol-uni-scylla-3:
+    name: vol-uni-scylla-3
 networks:
-  ws-scylla:
-    name: ws-scylla
+  uni-scylla:
+    name: uni-scylla
     driver: bridge
     ipam:
       config:
         - subnet: 10.10.5.0/24
           gateway: 10.10.5.1
     driver_opts:
-      com.docker.network.bridge.name: ws-scylla
+      com.docker.network.bridge.name: uni-scylla
